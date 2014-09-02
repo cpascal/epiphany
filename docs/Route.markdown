@@ -119,6 +119,17 @@ To load your ini file you'll need to set the path to your config file and call t
 
 ----------------------------------------
 
+### Lazy Loading routes from an external file
+
+When projects grow, loading all the routes and associate code becames to expensive, to avoid this, you can create a lazyload when a route is detected.
+
+    getRoute()->addLazyRoute("/path", "path/to/includefile");
+
+This will provoke when a route to a /path is detected it will load the file pointed by includefile. 
+There you can load more routes.
+
+----------------------------------------
+
 ### Server side redirects
 
 You can perform server side redirects using this module. The `redirect()` method takes between 1 and 3 parameters.

@@ -18,8 +18,11 @@ class EpiRoute
 {
   private static $instance;
   private $routes = array();
+  private $lazyRoute = array();
+  private $lazyRegexes = array();
   private $regexes= array();
   private $route = null;
+
   const routeKey= '__route__';
   const httpGet = 'GET';
   const httpPost= 'POST';
@@ -167,6 +170,15 @@ class EpiRoute
 
     if($httpMethod === null)
       $httpMethod = $_SERVER['REQUEST_METHOD'];
+      
+    foreach($this->lazyRegexes as $ind => $regex)
+    {
+      if(preg_match($regex, $this->route))
+      {
+ 	require_once $this->lazyRoute[$ind]['include'];
+      }
+    }
+      
 
     foreach($this->regexes as $ind => $regex)
     {
@@ -254,6 +266,23 @@ class EpiRoute
     if(Epi::getSetting('debug'))
       getDebug()->addMessage(__CLASS__, sprintf('Found %s : %s : %s', $method, $route, json_encode($callback)));
   }
+  
+  /**
+  * addLazyRoute($route, $filename)
+  * @name addLazyRoute
+  * @author Andres Tello <mr.criptos@gmail.com>
+  * @param string $route 
+  * @param string $filename
+  *
+  */
+  public function addLazyRoute($route=false, $include=false)
+  {
+    $this->lazyRoute[]=array('path'=>$route, 'include'=>$include);
+    $this->lazyRegexes[]= "#^{$route}/(.*)$#";
+    if(EPi::GetSetting('debug'))
+      getDebug()->addMessage(__CLASS__, sprintf('Found lazyRoute : %s : %s ', $path, $include));
+  }
+  
 }
 
 function getRoute()
