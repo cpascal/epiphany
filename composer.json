@@ -1,5 +1,6 @@
 {
     "name": "cpascal/epiphany",
+    "version": "1.8.0",
     "require": {
         "php": ">=5.2.0"
     },
